@@ -1,0 +1,17 @@
+{
+  "name": "ledgerly",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Ledgerly — freelancer finance OS (Angular + NestJS + Neon + Tailwind)",
+  "scripts": {
+    "dev": "node tools/node_modules/concurrently/dist/bin/concurrently.js -k -n api,web -c teal,cyan \"npm run dev --prefix apps/api\" \"npm run start --prefix apps/web -- --host 0.0.0.0 --port 8080 --proxy-config proxy.conf.json\"",
+    "dev:api": "npm run dev --prefix apps/api",
+    "dev:web": "npm run start --prefix apps/web -- --host 0.0.0.0 --port 8080 --proxy-config proxy.conf.json",
+    "build": "npm run build --prefix apps/web && npm run build --prefix apps/api",
+    "start:prod": "PORT=8080 node apps/api/dist/main.js",
+    "test:e2e": "node scripts/ledgerly-smoke.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

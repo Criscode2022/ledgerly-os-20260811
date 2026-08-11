@@ -1,0 +1,93 @@
+@if (error()) {
+  <p class="text-danger">{{ error() }}</p>
+} @else if (!data()) {
+  <div class="animate-pulse space-y-4">
+    <div class="h-8 w-48 bg-elevated rounded"></div>
+    <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
+      @for (i of [1,2,3,4]; track i) {
+        <div class="card h-28"></div>
+      }
+    </div>
+  </div>
+} @else {
+  <div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+      <div>
+        <p class="text-sm text-muted">Overview</p>
+        <h1 class="font-display text-3xl font-semibold tracking-tight">
+          Hello, {{ (auth.user()?.name || 'there').split(' ')[0] }}
+        </h1>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <a routerLink="/app/invoices" class="btn-primary">New invoice</a>
+        <a routerLink="/app/clients" class="btn-secondary">Add client</a>
+      </div>
+    </div>
+
+    <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
+      <div class="card p-5">
+        <p class="text-xs uppercase tracking-wide text-muted">Revenue (paid)</p>
+        <p class="mt-2 font-display text-2xl font-semibold text-success">{{ money(data()!.metrics.revenue) }}</p>
+      </div>
+      <div class="card p-5">
+        <p class="text-xs uppercase tracking-wide text-muted">Outstanding</p>
+        <p class="mt-2 font-display text-2xl font-semibold text-accent">{{ money(data()!.metrics.outstanding) }}</p>
+      </div>
+      <div class="card p-5">
+        <p class="text-xs uppercase tracking-wide text-muted">Expenses</p>
+        <p class="mt-2 font-display text-2xl font-semibold text-danger">{{ money(data()!.metrics.expenses) }}</p>
+      </div>
+      <div class="card p-5">
+        <p class="text-xs uppercase tracking-wide text-muted">Net</p>
+        <p class="mt-2 font-display text-2xl font-semibold">{{ money(data()!.metrics.net) }}</p>
+        <p class="text-xs text-muted mt-1">{{ data()!.metrics.clientCount }} clients · {{ data()!.metrics.invoiceCount }} invoices</p>
+      </div>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-4">
+      <div class="card p-5 lg:col-span-2">
+        <h2 class="font-semibold mb-4">Revenue vs expenses</h2>
+        <div class="h-64"><canvas #revChart></canvas></div>
+      </div>
+      <div class="card p-5">
+        <h2 class="font-semibold mb-4">Invoices by status</h2>
+        <div class="h-64"><canvas #statusChart></canvas></div>
+      </div>
+    </div>
+
+    <div class="card overflow-hidden">
+      <div class="px-5 py-4 border-b border-border flex items-center justify-between">
+        <h2 class="font-semibold">Recent invoices</h2>
+        <a routerLink="/app/invoices" class="text-sm text-primary hover:underline">View all</a>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead class="text-left text-muted border-b border-border">
+            <tr>
+              <th class="px-5 py-3 font-medium">Number</th>
+              <th class="px-5 py-3 font-medium">Client</th>
+              <th class="px-5 py-3 font-medium">Status</th>
+              <th class="px-5 py-3 font-medium">Due</th>
+              <th class="px-5 py-3 font-medium text-right">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (inv of data()!.recentInvoices; track inv.id) {
+              <tr class="border-b border-border/60 hover:bg-elevated/40">
+                <td class="px-5 py-3 font-medium">
+                  <a [routerLink]="['/app/invoices', inv.id]" class="hover:text-primary">{{ inv.number }}</a>
+                </td>
+                <td class="px-5 py-3 text-muted">{{ inv.client?.name || '—' }}</td>
+                <td class="px-5 py-3"><span [class]="'badge-' + inv.status">{{ inv.status }}</span></td>
+                <td class="px-5 py-3 text-muted">{{ shortDate(inv.dueDate) }}</td>
+                <td class="px-5 py-3 text-right font-medium">{{ money(inv.total) }}</td>
+              </tr>
+            } @empty {
+              <tr><td colspan="5" class="px-5 py-8 text-center text-muted">No invoices yet</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+}

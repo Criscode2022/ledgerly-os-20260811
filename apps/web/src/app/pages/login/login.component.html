@@ -1,0 +1,56 @@
+<div class="min-h-screen grid lg:grid-cols-2">
+  <section class="relative hidden lg:flex flex-col justify-between p-12 overflow-hidden bg-elevated border-r border-border">
+    <div class="absolute inset-0 opacity-40" style="background:
+      radial-gradient(ellipse 60% 50% at 20% 20%, rgba(45,212,191,0.18), transparent 60%),
+      radial-gradient(ellipse 50% 40% at 80% 80%, rgba(56,189,248,0.12), transparent 55%);"></div>
+    <div class="relative">
+      <div class="flex items-center gap-3">
+        <div class="h-10 w-10 rounded-xl bg-primary text-primary-fg grid place-items-center font-bold">L</div>
+        <span class="font-display text-2xl font-semibold tracking-tight">Ledgerly</span>
+      </div>
+    </div>
+    <div class="relative max-w-md space-y-4">
+      <h1 class="font-display text-4xl font-semibold leading-tight text-fg">Cash flow clarity for independent studios.</h1>
+      <p class="text-muted text-lg leading-relaxed">Track clients, send invoices, log expenses, and see what’s outstanding — without the spreadsheet chaos.</p>
+      <ul class="space-y-2 text-sm text-muted">
+        <li class="flex gap-2"><span class="text-primary">✓</span> Invoice lifecycle from draft to paid</li>
+        <li class="flex gap-2"><span class="text-primary">✓</span> Expense categories & billable flags</li>
+        <li class="flex gap-2"><span class="text-primary">✓</span> Live dashboard with revenue trends</li>
+      </ul>
+    </div>
+    <p class="relative text-xs text-muted">Built with Angular · NestJS · Neon · Tailwind</p>
+  </section>
+
+  <section class="flex items-center justify-center p-6 sm:p-10">
+    <div class="w-full max-w-md space-y-8">
+      <div class="lg:hidden flex items-center gap-3">
+        <div class="h-9 w-9 rounded-xl bg-primary text-primary-fg grid place-items-center font-bold">L</div>
+        <span class="font-display text-xl font-semibold">Ledgerly</span>
+      </div>
+      <div>
+        <h2 class="font-display text-3xl font-semibold">Welcome back</h2>
+        <p class="text-muted mt-2">Sign in to your workspace. Demo: <span class="text-fg">demo&#64;ledgerly.app</span> / <span class="text-fg">demo1234</span></p>
+      </div>
+      <form class="card p-6 space-y-4" (ngSubmit)="submit()">
+        <div>
+          <label class="label" for="email">Email</label>
+          <input id="email" class="field" type="email" [(ngModel)]="email" name="email" required autocomplete="email" />
+        </div>
+        <div>
+          <label class="label" for="password">Password</label>
+          <input id="password" class="field" type="password" [(ngModel)]="password" name="password" required autocomplete="current-password" />
+        </div>
+        @if (error()) {
+          <p class="text-sm text-danger">{{ error() }}</p>
+        }
+        <button class="btn-primary w-full" type="submit" [disabled]="loading()">
+          {{ loading() ? 'Signing in…' : 'Sign in' }}
+        </button>
+      </form>
+      <p class="text-sm text-muted text-center">
+        New here?
+        <a routerLink="/register" class="text-primary hover:underline">Create an account</a>
+      </p>
+    </div>
+  </section>
+</div>

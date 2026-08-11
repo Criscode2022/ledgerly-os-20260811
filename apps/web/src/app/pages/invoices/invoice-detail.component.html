@@ -1,0 +1,69 @@
+@if (error()) {
+  <p class="text-danger">{{ error() }}</p>
+} @else if (!invoice()) {
+  <p class="text-muted">Loading…</p>
+} @else {
+  <div class="space-y-6 max-w-3xl">
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <a routerLink="/app/invoices" class="text-sm text-muted hover:text-primary">← Invoices</a>
+        <h1 class="font-display text-3xl font-semibold mt-2">{{ invoice()!.number }}</h1>
+        <p class="text-muted mt-1">{{ invoice()!.client?.name }}</p>
+      </div>
+      <span [class]="'badge-' + invoice()!.status">{{ invoice()!.status }}</span>
+    </div>
+
+    <div class="card p-6 space-y-6">
+      <div class="grid sm:grid-cols-3 gap-4 text-sm">
+        <div>
+          <p class="text-muted text-xs uppercase tracking-wide">Issue date</p>
+          <p class="mt-1 font-medium">{{ shortDate(invoice()!.issueDate) }}</p>
+        </div>
+        <div>
+          <p class="text-muted text-xs uppercase tracking-wide">Due date</p>
+          <p class="mt-1 font-medium">{{ shortDate(invoice()!.dueDate) }}</p>
+        </div>
+        <div>
+          <p class="text-muted text-xs uppercase tracking-wide">Paid</p>
+          <p class="mt-1 font-medium">{{ shortDate(invoice()!.paidAt) }}</p>
+        </div>
+      </div>
+
+      <table class="w-full text-sm">
+        <thead class="text-left text-muted border-b border-border">
+          <tr>
+            <th class="py-2 font-medium">Description</th>
+            <th class="py-2 font-medium text-right">Qty</th>
+            <th class="py-2 font-medium text-right">Rate</th>
+            <th class="py-2 font-medium text-right">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of invoice()!.items; track $index) {
+            <tr class="border-b border-border/50">
+              <td class="py-3">{{ item.description }}</td>
+              <td class="py-3 text-right text-muted">{{ item.quantity }}</td>
+              <td class="py-3 text-right text-muted">{{ money(item.unitPrice) }}</td>
+              <td class="py-3 text-right font-medium">{{ money(item.amount ?? item.quantity * item.unitPrice) }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      <div class="flex justify-end">
+        <div class="w-56 space-y-1 text-sm">
+          <div class="flex justify-between"><span class="text-muted">Subtotal</span><span>{{ money(invoice()!.subtotal) }}</span></div>
+          <div class="flex justify-between"><span class="text-muted">Tax ({{ invoice()!.taxRate }}%)</span><span>{{ money(invoice()!.taxAmount) }}</span></div>
+          <div class="flex justify-between font-semibold text-base pt-2 border-t border-border"><span>Total</span><span>{{ money(invoice()!.total) }}</span></div>
+        </div>
+      </div>
+
+      @if (invoice()!.notes) {
+        <div class="text-sm">
+          <p class="text-muted text-xs uppercase tracking-wide mb-1">Notes</p>
+          <p>{{ invoice()!.notes }}</p>
+        </div>
+      }
+    </div>
+  </div>
+}

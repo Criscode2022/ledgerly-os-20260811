@@ -1,0 +1,94 @@
+<div class="space-y-6">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+    <div>
+      <p class="text-sm text-muted">Spending</p>
+      <h1 class="font-display text-3xl font-semibold">Expenses</h1>
+    </div>
+    <button class="btn-primary" type="button" (click)="openCreate()">Log expense</button>
+  </div>
+
+  <div class="card p-5 flex items-center justify-between">
+    <div>
+      <p class="text-xs uppercase tracking-wide text-muted">Total recorded</p>
+      <p class="font-display text-2xl font-semibold mt-1">{{ money(total()) }}</p>
+    </div>
+    <p class="text-sm text-muted">{{ expenses().length }} entries</p>
+  </div>
+
+  @if (error()) { <p class="text-sm text-danger">{{ error() }}</p> }
+
+  @if (showForm()) {
+    <form class="card p-5 grid sm:grid-cols-2 gap-4" (ngSubmit)="save()">
+      <div class="sm:col-span-2 flex items-center justify-between">
+        <h2 class="font-semibold">New expense</h2>
+        <button type="button" class="btn-ghost" (click)="showForm.set(false)">Close</button>
+      </div>
+      <div class="sm:col-span-2">
+        <label class="label">Description</label>
+        <input class="field" [(ngModel)]="form.description" name="description" required />
+      </div>
+      <div>
+        <label class="label">Category</label>
+        <select class="field" [(ngModel)]="form.category" name="category">
+          @for (c of categories; track c) {
+            <option [value]="c">{{ c }}</option>
+          }
+        </select>
+      </div>
+      <div>
+        <label class="label">Amount</label>
+        <input class="field" type="number" min="0" step="0.01" [(ngModel)]="form.amount" name="amount" required />
+      </div>
+      <div>
+        <label class="label">Date</label>
+        <input class="field" type="date" [(ngModel)]="form.date" name="date" required />
+      </div>
+      <div class="flex items-end pb-2">
+        <label class="inline-flex items-center gap-2 text-sm">
+          <input type="checkbox" [(ngModel)]="form.billable" name="billable" class="rounded border-border" />
+          Billable to client
+        </label>
+      </div>
+      <div class="sm:col-span-2">
+        <label class="label">Notes</label>
+        <textarea class="field min-h-[72px]" [(ngModel)]="form.notes" name="notes"></textarea>
+      </div>
+      <div class="sm:col-span-2">
+        <button class="btn-primary" type="submit">Save expense</button>
+      </div>
+    </form>
+  }
+
+  <div class="card overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="text-left text-muted border-b border-border">
+          <tr>
+            <th class="px-5 py-3 font-medium">Date</th>
+            <th class="px-5 py-3 font-medium">Description</th>
+            <th class="px-5 py-3 font-medium">Category</th>
+            <th class="px-5 py-3 font-medium">Billable</th>
+            <th class="px-5 py-3 font-medium text-right">Amount</th>
+            <th class="px-5 py-3"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (e of expenses(); track e.id) {
+            <tr class="border-b border-border/60 hover:bg-elevated/40">
+              <td class="px-5 py-3 text-muted whitespace-nowrap">{{ shortDate(e.date) }}</td>
+              <td class="px-5 py-3 font-medium">{{ e.description }}</td>
+              <td class="px-5 py-3"><span class="badge-draft">{{ e.category }}</span></td>
+              <td class="px-5 py-3 text-muted">{{ e.billable ? 'Yes' : 'No' }}</td>
+              <td class="px-5 py-3 text-right font-medium">{{ money(e.amount) }}</td>
+              <td class="px-5 py-3 text-right">
+                <button class="btn-danger text-xs py-1 px-2" type="button" (click)="remove(e)">Delete</button>
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="6" class="px-5 py-10 text-center text-muted">No expenses logged</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

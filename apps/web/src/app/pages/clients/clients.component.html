@@ -1,0 +1,74 @@
+<div class="space-y-6">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+    <div>
+      <p class="text-sm text-muted">CRM</p>
+      <h1 class="font-display text-3xl font-semibold">Clients</h1>
+    </div>
+    <button class="btn-primary" type="button" (click)="openCreate()">Add client</button>
+  </div>
+
+  <div class="flex gap-2">
+    <input class="field max-w-md" placeholder="Search name, email, company…" [(ngModel)]="q" (ngModelChange)="reload()" />
+  </div>
+
+  @if (error()) { <p class="text-sm text-danger">{{ error() }}</p> }
+
+  @if (showForm()) {
+    <form class="card p-5 grid sm:grid-cols-2 gap-4" (ngSubmit)="save()">
+      <div class="sm:col-span-2 flex items-center justify-between">
+        <h2 class="font-semibold">{{ editing() ? 'Edit client' : 'New client' }}</h2>
+        <button type="button" class="btn-ghost" (click)="showForm.set(false)">Close</button>
+      </div>
+      <div>
+        <label class="label">Name</label>
+        <input class="field" [(ngModel)]="form.name" name="name" required />
+      </div>
+      <div>
+        <label class="label">Email</label>
+        <input class="field" type="email" [(ngModel)]="form.email" name="email" />
+      </div>
+      <div>
+        <label class="label">Company</label>
+        <input class="field" [(ngModel)]="form.company" name="company" />
+      </div>
+      <div>
+        <label class="label">Phone</label>
+        <input class="field" [(ngModel)]="form.phone" name="phone" />
+      </div>
+      <div class="sm:col-span-2">
+        <label class="label">Address</label>
+        <input class="field" [(ngModel)]="form.address" name="address" />
+      </div>
+      <div class="sm:col-span-2">
+        <label class="label">Notes</label>
+        <textarea class="field min-h-[80px]" [(ngModel)]="form.notes" name="notes"></textarea>
+      </div>
+      <div class="sm:col-span-2">
+        <button class="btn-primary" type="submit">Save client</button>
+      </div>
+    </form>
+  }
+
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    @for (c of clients(); track c.id) {
+      <article class="card p-5 flex flex-col gap-3">
+        <div>
+          <h3 class="font-semibold text-lg">{{ c.name }}</h3>
+          <p class="text-sm text-muted">{{ c.company || 'Independent' }}</p>
+        </div>
+        <div class="text-sm space-y-1 text-muted">
+          @if (c.email) { <p>{{ c.email }}</p> }
+          @if (c.phone) { <p>{{ c.phone }}</p> }
+        </div>
+        <div class="mt-auto flex gap-2 pt-2">
+          <button class="btn-secondary flex-1" type="button" (click)="openEdit(c)">Edit</button>
+          <button class="btn-danger" type="button" (click)="remove(c)">Delete</button>
+        </div>
+      </article>
+    } @empty {
+      <div class="card p-8 sm:col-span-2 lg:col-span-3 text-center text-muted">
+        No clients yet. Add your first client to start invoicing.
+      </div>
+    }
+  </div>
+</div>
