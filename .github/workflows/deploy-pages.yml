@@ -27,8 +27,7 @@ jobs:
       - name: Install & build
         working-directory: apps/web
         run: |
-          npm ci
-          # Base href for project pages
+          npm ci --legacy-peer-deps
           npx ng build --base-href /ledgerly-os-20260811/
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
